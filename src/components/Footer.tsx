@@ -1,4 +1,4 @@
-import logoImage from "../imports/Logo_The_Outback_F_B_Service_2.png";
+import logoImage from "../imports/optimized/logo.webp";
 
 interface FooterProps {
   onNavigate: (page: string) => void;
@@ -53,6 +53,8 @@ export default function Footer({ onNavigate }: FooterProps) {
             <img
               src={logoImage}
               alt="The Outback F&B Service"
+              loading="lazy"
+              decoding="async"
               style={{ height: 80, width: "auto", marginBottom: 20 }}
             />
             <p

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Drawer } from "@base-ui/react/drawer";
-import banhMiImage from "../imports/banhmi.png";
-import logoImage from "../imports/Logo_The_Outback_F_B_Service_2.png";
+import banhMiImage from "../imports/optimized/banhmi.webp";
+import logoImage from "../imports/optimized/logo.webp";
 
 const DrawerRoot = Drawer.Root;
 const DrawerTrigger = Drawer.Trigger;
@@ -427,6 +427,10 @@ export default function Hero({ onNavigate, currentPage }: HeroProps) {
                     <img
                         src={BANH_MI_URL}
                         alt="Crispy roast pork Banh Mi"
+                        width={1448}
+                        height={1086}
+                        decoding="async"
+                        fetchPriority="high"
                         style={{
                             width: "100%",
                             height: "auto",

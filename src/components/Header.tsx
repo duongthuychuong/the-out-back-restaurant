@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Drawer } from "@base-ui/react/drawer";
-import logoImage from "../imports/Logo_The_Outback_F_B_Service_2.png";
+import logoImage from "../imports/optimized/logo.webp";
 
 const DrawerRoot = Drawer.Root;
 const DrawerTrigger = Drawer.Trigger;

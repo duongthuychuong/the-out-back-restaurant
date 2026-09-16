@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Dialog } from "@base-ui/react/dialog";
-import cateringImage from "../imports/catering.png";
+import cateringImage from "../imports/optimized/catering.webp";
 
 const DialogRoot = Dialog.Root;
 const DialogTrigger = Dialog.Trigger;
@@ -706,6 +706,10 @@ export default function CateringSection() {
                     <img
                         src={cateringImage}
                         alt="Catering spread — Banh Mi platters and Vietnamese feast"
+                        loading="lazy"
+                        decoding="async"
+                        width={1448}
+                        height={1086}
                         style={{
                             width: "100%",
                             height: 480,
