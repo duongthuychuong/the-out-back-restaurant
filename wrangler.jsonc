@@ -21,6 +21,16 @@
   "secrets": {
     "required": ["ADMIN_PASSWORD"]
   },
+  "vars": {
+    "CATERING_EMAIL_TO": "admin@theoutbackfnb.com"
+  },
+  "send_email": [
+    {
+      "name": "CATERING_EMAIL",
+      "destination_address": "admin@theoutbackfnb.com",
+      "remote": true
+    }
+  ],
   "r2_buckets": [
     {
       "binding": "MENU_IMAGES",

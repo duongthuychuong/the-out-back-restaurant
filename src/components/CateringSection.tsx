@@ -10,42 +10,46 @@ const DialogPopup = Dialog.Popup;
 const DialogClose = Dialog.Close;
 const DialogTitle = Dialog.Title;
 const DialogDescription = Dialog.Description;
-const ENQUIRY_EMAIL = "admin@theoutbackfnb.com";
+const emptyForm = {
+    name: "",
+    email: "",
+    phone: "",
+    date: "",
+    headcount: "",
+    budget: "",
+    message: "",
+};
 
 export default function CateringSection() {
     const [submitted, setSubmitted] = useState(false);
-    const [form, setForm] = useState({
-        name: "",
-        email: "",
-        phone: "",
-        date: "",
-        headcount: "",
-        budget: "",
-        message: "",
-    });
+    const [submitting, setSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState("");
+    const [website, setWebsite] = useState("");
+    const [form, setForm] = useState(emptyForm);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (submitting) return;
+        setSubmitError("");
+        setSubmitting(true);
 
-        const subject = `Catering enquiry from ${form.name}`;
-        const body = [
-            "Hello The Outback F&B Service,",
-            "",
-            "I would like to enquire about catering.",
-            "",
-            `Name: ${form.name}`,
-            `Email: ${form.email}`,
-            `Phone: ${form.phone || "Not provided"}`,
-            `Event date: ${form.date || "Not provided"}`,
-            `Headcount: ${form.headcount || "Not provided"}`,
-            `Budget (AUD): ${form.budget}`,
-            "",
-            "Additional details:",
-            form.message || "None provided",
-        ].join("\n");
+        try {
+            const response = await fetch("/api/catering-enquiry", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...form, website }),
+            });
+            const result = await response.json();
+            if (!response.ok || result.ok !== true) throw new Error("Email delivery failed");
 
-        window.location.href = `mailto:${ENQUIRY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        setSubmitted(true);
+            setForm(emptyForm);
+            setWebsite("");
+            setSubmitted(true);
+        } catch {
+            setSubmitError("We couldn't send your enquiry. Please try again or call us on 0435 337 006.");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -267,7 +271,7 @@ export default function CateringSection() {
                                                 margin: "0 0 12px",
                                             }}
                                         >
-                                            EMAIL READY!
+                                            ENQUIRY SENT!
                                         </h3>
                                         <p
                                             style={{
@@ -276,9 +280,8 @@ export default function CateringSection() {
                                                 lineHeight: 1.6,
                                             }}
                                         >
-                                            Your email app has opened with the
-                                            enquiry details. Press send there to
-                                            email {ENQUIRY_EMAIL}.
+                                            Your catering enquiry has been sent.
+                                            We&apos;ll be in touch soon.
                                         </p>
                                         <DialogClose
                                             style={{
@@ -369,18 +372,21 @@ export default function CateringSection() {
                                                     label: "Your name",
                                                     type: "text",
                                                     required: true,
+                                                    maxLength: 100,
                                                 },
                                                 {
                                                     key: "email",
                                                     label: "Email address",
                                                     type: "email",
                                                     required: true,
+                                                    maxLength: 254,
                                                 },
                                                 {
                                                     key: "phone",
                                                     label: "Phone number",
                                                     type: "tel",
                                                     required: false,
+                                                    maxLength: 50,
                                                 },
                                             ].map(
                                                 ({
@@ -388,9 +394,11 @@ export default function CateringSection() {
                                                     label,
                                                     type,
                                                     required,
+                                                    maxLength,
                                                 }) => (
                                                     <div key={key}>
                                                         <label
+                                                            htmlFor={`catering-${key}`}
                                                             style={{
                                                                 display:
                                                                     "block",
@@ -408,8 +416,11 @@ export default function CateringSection() {
                                                             {required && " *"}
                                                         </label>
                                                         <input
+                                                            id={`catering-${key}`}
+                                                            name={key}
                                                             type={type}
                                                             required={required}
+                                                            maxLength={maxLength}
                                                             value={
                                                                 form[
                                                                     key as keyof typeof form
@@ -462,6 +473,7 @@ export default function CateringSection() {
                                             >
                                                 <div>
                                                     <label
+                                                        htmlFor="catering-date"
                                                         style={{
                                                             display: "block",
                                                             fontFamily:
@@ -477,6 +489,7 @@ export default function CateringSection() {
                                                         EVENT DATE
                                                     </label>
                                                     <input
+                                                        id="catering-date"
                                                         type="date"
                                                         value={form.date}
                                                         onChange={(e) =>
@@ -502,6 +515,7 @@ export default function CateringSection() {
                                                 </div>
                                                 <div>
                                                     <label
+                                                        htmlFor="catering-headcount"
                                                         style={{
                                                             display: "block",
                                                             fontFamily:
@@ -517,8 +531,10 @@ export default function CateringSection() {
                                                         HEADCOUNT
                                                     </label>
                                                     <input
+                                                        id="catering-headcount"
                                                         type="number"
-                                                        min="10"
+                                                        min="1"
+                                                        max="9999"
                                                         placeholder="e.g. 25"
                                                         value={form.headcount}
                                                         onChange={(e) =>
@@ -611,6 +627,7 @@ export default function CateringSection() {
 
                                             <div>
                                                 <label
+                                                    htmlFor="catering-message"
                                                     style={{
                                                         display: "block",
                                                         fontFamily:
@@ -625,7 +642,9 @@ export default function CateringSection() {
                                                     ANYTHING ELSE?
                                                 </label>
                                                 <textarea
+                                                    id="catering-message"
                                                     rows={3}
+                                                    maxLength={2000}
                                                     placeholder="Dietary requirements, event type, location..."
                                                     value={form.message}
                                                     onChange={(e) =>
@@ -650,8 +669,40 @@ export default function CateringSection() {
                                                 />
                                             </div>
 
+                                            <div
+                                                aria-hidden="true"
+                                                style={{ position: "absolute", left: "-9999px" }}
+                                            >
+                                                <label htmlFor="catering-website">Website</label>
+                                                <input
+                                                    id="catering-website"
+                                                    name="website"
+                                                    type="text"
+                                                    tabIndex={-1}
+                                                    autoComplete="off"
+                                                    value={website}
+                                                    onChange={(e) => setWebsite(e.target.value)}
+                                                />
+                                            </div>
+
+                                            {submitError && (
+                                                <p
+                                                    role="alert"
+                                                    style={{
+                                                        margin: 0,
+                                                        color: "#8B1E1E",
+                                                        fontFamily: "var(--font-body)",
+                                                        fontSize: 13,
+                                                        lineHeight: 1.5,
+                                                    }}
+                                                >
+                                                    {submitError} <a href="tel:+61435337006">Call now</a>.
+                                                </p>
+                                            )}
+
                                             <button
                                                 type="submit"
+                                                disabled={submitting}
                                                 style={{
                                                     backgroundColor: "#E07828",
                                                     color: "#FFFFFF",
@@ -662,10 +713,11 @@ export default function CateringSection() {
                                                     padding: "14px 28px",
                                                     borderRadius: 8,
                                                     border: "none",
-                                                    cursor: "pointer",
                                                     marginTop: 4,
                                                     transition:
                                                         "background-color 150ms ease",
+                                                    opacity: submitting ? 0.7 : 1,
+                                                    cursor: submitting ? "wait" : "pointer",
                                                 }}
                                                 onMouseEnter={(e) =>
                                                     (e.currentTarget.style.backgroundColor =
@@ -676,7 +728,7 @@ export default function CateringSection() {
                                                         "#E07828")
                                                 }
                                             >
-                                                SEND ENQUIRY
+                                                {submitting ? "SENDING..." : "SEND ENQUIRY"}
                                             </button>
                                             <p
                                                 style={{
@@ -689,8 +741,7 @@ export default function CateringSection() {
                                                     color: "#777",
                                                 }}
                                             >
-                                                Opens your email app with the
-                                                enquiry addressed to {ENQUIRY_EMAIL}.
+                                                Sends directly from this form — no email app needed.
                                             </p>
                                         </form>
                                     </>

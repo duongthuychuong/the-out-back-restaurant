@@ -8,6 +8,7 @@ import {
   saveMenuOrder,
   uploadMenuImage,
 } from "./menu.js"
+import { sendCateringEnquiry } from "./catering.js"
 
 export default {
   async fetch(request, env) {
@@ -29,6 +30,11 @@ export default {
     if (pathname === "/api/menu/image") {
       if (request.method === "GET") return getMenuImage(request, env)
       return methodNotAllowed(["GET"])
+    }
+
+    if (pathname === "/api/catering-enquiry") {
+      if (request.method === "POST") return sendCateringEnquiry(request, env)
+      return methodNotAllowed(["POST"])
     }
 
     if (pathname.startsWith("/api/")) return apiNotFound()

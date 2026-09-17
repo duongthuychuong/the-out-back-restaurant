@@ -10,6 +10,7 @@
     "prebuild": "npm run images:optimize",
     "build": "vite build",
     "deploy:cloudflare": "npm run build && wrangler deploy",
+    "test": "node --test",
     "preview": "vite preview",
     "format": "oxfmt"
   },
