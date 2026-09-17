@@ -5,6 +5,13 @@
   "compatibility_date": "2026-09-16",
   "workers_dev": true,
   "preview_urls": true,
+  "routes": [
+    {
+      "pattern": "theoutbackfnb.com",
+      "zone_name": "theoutbackfnb.com",
+      "custom_domain": true
+    }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",

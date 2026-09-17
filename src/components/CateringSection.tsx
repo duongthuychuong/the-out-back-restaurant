@@ -149,10 +149,9 @@ export default function CateringSection() {
                         }}
                     >
                         {[
-                            "Minimum 10 people",
                             "Banh Mi, noodles, rolls, sides",
                             "Office, events & private functions",
-                            "48-hour advance notice",
+                            "Please contact us at least 48 hours ahead if possible",
                         ].map((item) => (
                             <div
                                 key={item}
